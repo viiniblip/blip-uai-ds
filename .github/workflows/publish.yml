@@ -1,0 +1,123 @@
+name: Build, Smoke Test & Publish
+
+on:
+  push:
+    tags:
+      - 'v*'          # dispara em v0.1.0, v1.0.0, etc.
+  workflow_dispatch:   # permite rodar manualmente
+
+jobs:
+  build-and-test:
+    name: Build + Smoke Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (library mode)
+        run: npm run build
+
+      - name: Verify dist artifacts
+        run: |
+          test -f dist/index.js   || (echo "dist/index.js missing" && exit 1)
+          test -f dist/index.d.ts || (echo "dist/index.d.ts missing" && exit 1)
+          echo "dist OK: $(ls dist/*.js dist/*.d.ts | wc -l) files"
+
+      - name: Pack tarball
+        run: npm pack
+
+      - name: Smoke test – scaffold Vite+React 18 sandbox
+        run: |
+          SANDBOX=$(mktemp -d)
+          # package.json mínimo com React 18 + nosso kit
+          cat > "$SANDBOX/package.json" << 'JSON'
+          {
+            "name": "smoke-sandbox",
+            "private": true,
+            "version": "0.0.0",
+            "type": "module",
+            "scripts": { "build": "vite build" },
+            "dependencies": {
+              "react": "18.3.1",
+              "react-dom": "18.3.1",
+              "blip-ds": "2.0.0-rc.16",
+              "blip-ds-react": "2.0.0-rc.16"
+            },
+            "devDependencies": {
+              "@vitejs/plugin-react": "^4.3.0",
+              "vite": "^5.4.0"
+            }
+          }
+          JSON
+
+          # vite.config.js do sandbox
+          cat > "$SANDBOX/vite.config.js" << 'JS'
+          import { defineConfig } from 'vite';
+          import react from '@vitejs/plugin-react';
+          export default defineConfig({ plugins: [react()] });
+          JS
+
+          # index.html mínimo
+          mkdir -p "$SANDBOX/src"
+          cat > "$SANDBOX/index.html" << 'HTML'
+          <!doctype html><html><body><div id="root"></div>
+          <script type="module" src="/src/main.tsx"></script></body></html>
+          HTML
+
+          # main.tsx com o smoke test real
+          cat > "$SANDBOX/src/main.tsx" << 'TSX'
+          import React from 'react';
+          import ReactDOM from 'react-dom/client';
+          import { UaiKitProvider, BdsButton } from 'blip-uai-ds';
+          ReactDOM.createRoot(document.getElementById('root')!).render(
+            <UaiKitProvider theme="light">
+              <BdsButton variant="primary">Teste</BdsButton>
+            </UaiKitProvider>
+          );
+          TSX
+
+          # instala deps + tarball local
+          TARBALL=$(ls $GITHUB_WORKSPACE/blip-uai-ds-*.tgz)
+          cd "$SANDBOX"
+          npm install --legacy-peer-deps
+          npm install "$TARBALL" --legacy-peer-deps
+
+          # build: se passar sem erro, kit importa e resolve corretamente
+          npx vite build
+          echo "Smoke test PASSED"
+
+  publish:
+    name: Publish to npm
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # Só publica em tags, nunca em workflow_dispatch manual sem tag
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish blip-uai-ds
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
