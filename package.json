@@ -1,6 +1,6 @@
 {
   "name": "blip-uai-ds",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Make kit autocontido do UAI (blip-ds) para o Figma Make. Inclui blip-ds + blip-ds-react, registra os web components e provê o ThemeProvider + fonte.",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,7 +16,8 @@
   "dependencies": {
     "blip-ds": "2.0.0-rc.16",
     "blip-ds-react": "2.0.0-rc.16",
-    "@fontsource/nunito-sans": "^5.0.0"
+    "@fontsource/nunito-sans": "^5.0.0",
+    "react-grid-system": "^8.2.0"
   },
   "peerDependencies": {
     "react": "^18.3.1",

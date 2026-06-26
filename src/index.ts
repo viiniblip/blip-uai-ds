@@ -22,3 +22,7 @@ export * from 'blip-ds-react';
 
 // 4) Provider já configurado (tema + tokens). Use SEMPRE como raiz.
 export { UaiKitProvider } from './UaiKitProvider';
+
+// 5) Grid system estável (react-grid-system). Use Container/Row/Col para layout.
+//    Evite BdsGrid para breakpoints — tem bug estrutural com @lit/react + rAF.
+export { Container, Row, Col, setConfiguration } from 'react-grid-system';

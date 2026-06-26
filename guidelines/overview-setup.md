@@ -32,6 +32,75 @@ export default function App() {
 }
 ```
 
+## Layout — use `Container/Row/Col` do `react-grid-system`
+
+O `BdsGrid` tem um bug estrutural com breakpoints (`xs--undefined`) causado pela
+integração `@lit/react` + `requestAnimationFrame` do Stencil. **Não use `BdsGrid`
+para layout de colunas responsivas.**
+
+O kit re-exporta `Container`, `Row`, `Col` e `setConfiguration` do
+`react-grid-system` — use esses para estrutura de página. Os componentes UAI
+(`BdsCard`, `BdsButton` etc.) ficam dentro das colunas normalmente.
+
+### Breakpoints padrão
+
+| Prop | Min-width |
+|---|---|
+| `xs` | 0px (base) |
+| `sm` | 576px |
+| `md` | 768px |
+| `lg` | 992px |
+| `xl` | 1200px |
+| `xxl` | 1600px |
+
+### Exemplo correto
+
+```tsx
+import { UaiKitProvider, Container, Row, Col, BdsCard, BdsTypo, BdsButton } from 'blip-uai-ds';
+
+export default function App() {
+  return (
+    <UaiKitProvider theme="light">
+      <Container>
+        <Row gutterWidth={24}>
+          <Col xs={12} md={4}>
+            <BdsCard>
+              <BdsTypo variant="fs-16">Card 1</BdsTypo>
+            </BdsCard>
+          </Col>
+          <Col xs={12} md={4}>
+            <BdsCard>
+              <BdsTypo variant="fs-16">Card 2</BdsTypo>
+            </BdsCard>
+          </Col>
+          <Col xs={12} md={4}>
+            <BdsCard>
+              <BdsTypo variant="fs-16">Card 3</BdsTypo>
+            </BdsCard>
+          </Col>
+        </Row>
+      </Container>
+    </UaiKitProvider>
+  );
+}
+```
+
+### Regras
+- `Container` → wrapper de página (centraliza, aplica max-width)
+- `Row` → linha de colunas. Use `gutterWidth` em px para o gap (ex: `gutterWidth={24}`)
+- `Col` → coluna. Props são **number**, não string: `xs={12}` `md={4}`
+- Componentes UAI ficam **dentro** do `Col`, nunca substituem o grid
+
+### Customizar breakpoints para bater com o UAI (opcional)
+```tsx
+import { setConfiguration } from 'blip-uai-ds';
+
+setConfiguration({
+  breakpoints: [0, 600, 905, 993, 1601, 1921],
+  containerWidths: [540, 848, 944, 1328, 1424],
+});
+```
+
 ## BdsGrid — BUG CRÍTICO: use `<bds-grid>` raw para breakpoints
 
 ### Por que `xs--undefined` aparece no DOM
