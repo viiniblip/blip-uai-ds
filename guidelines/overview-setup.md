@@ -94,6 +94,49 @@ declare global {
 > - `<BdsGrid container gap="...">` → container raiz (sem breakpoints)
 > - `<bds-grid xs="..." md="...">` → colunas filhas (com breakpoints)
 
+## BdsGrid — Breakpoints e sistema de espaçamento
+
+### Breakpoints reais (extraídos do CSS do componente)
+
+| Prop | Min-width | Uso |
+|---|---|---|
+| `xxs` | nenhum (base) | mobile first — aplica **sempre**, sem media query |
+| `xs` | 600px | pequeno (landscape mobile) |
+| `sm` | 905px | tablet |
+| `md` | 993px | desktop pequeno |
+| `lg` | 1601px | desktop grande |
+| `xg` | 1921px | ultrawide |
+
+> **Mobile first:** use `xxs` para o valor padrão e sobreponha com `xs`, `md` etc.
+> `xxs="12" xs="6" md="4"` = full width base, metade em 600px, terço em 993px.
+
+### Gap — valores em px
+
+| Valor | px |
+|---|---|
+| `none` | 0 |
+| `half` | 4px |
+| `1` | 8px |
+| `2` | 16px |
+| `3` | 24px |
+| `4` | 32px |
+| `6` | 48px |
+
+### Container — max-width por breakpoint
+
+| Min-width | max-width do container |
+|---|---|
+| < 905px | 100% |
+| 905px | 848px |
+| 993px | 944px |
+| 1601px | 1328px |
+| 1921px | 1424px |
+
+> **Importante:** o container centraliza e limita a largura. Use apenas no grid raiz — nunca em grids aninhados.
+
+### Padding nativo das células
+Cada célula (`xxs`, `xs`, `md` etc.) tem `padding-left: 8px` e `padding-right: 8px` nativos. Isso cria um gutter de 16px entre colunas sem precisar de `gap`.
+
 ## BdsGrid — API real e armadilhas
 
 ### Tipos das props (fonte: `grid-interface.d.ts`)
