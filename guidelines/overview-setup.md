@@ -32,6 +32,68 @@ export default function App() {
 }
 ```
 
+## BdsGrid — BUG CRÍTICO: use `<bds-grid>` raw para breakpoints
+
+### Por que `xs--undefined` aparece no DOM
+
+`BdsGrid` (React wrapper) usa `@lit/react`, que detecta `xs`, `md`, `gap` no
+prototype do elemento e os envia via `useLayoutEffect` (property setter).
+O Stencil agenda o re-render via `requestAnimationFrame` — então o navegador
+pinta um frame com `xs--undefined` antes da prop chegar. **Isso não se resolve
+mudando o tipo do valor — é estrutural do wrapper.**
+
+### Solução: usar `<bds-grid>` raw (lowercase) para colunas com breakpoints
+
+React trata elementos com hífen (`bds-grid`) como custom elements HTML e passa
+string props como **atributos** antes de conectar ao DOM. O Stencil lê o valor
+correto já na inicialização — sem flash, sem `--undefined`.
+
+```tsx
+// ✅ CORRETO — usa <bds-grid> raw (lowercase) para breakpoints
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'bds-grid': React.HTMLAttributes<HTMLElement> & {
+        container?: boolean;
+        'container-fluid'?: boolean;
+        direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+        'flex-wrap'?: 'wrap' | 'wrap-reverse';
+        'justify-content'?: string;
+        'align-items'?: string;
+        gap?: 'none' | 'half' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        padding?: string;
+        margin?: string;
+        height?: string;
+        xs?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        sm?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        md?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        lg?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        xg?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+        xxs?: 'auto' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12';
+      };
+    }
+  }
+}
+
+// Container raiz: BdsGrid (React wrapper) — gap e container funcionam via propriedade
+// Colunas: <bds-grid> raw — xs/md chegam como atributo antes do connectedCallback
+<BdsGrid container gap="3">
+  <bds-grid xs="12" md="4">
+    <BdsCard>Card 1</BdsCard>
+  </bds-grid>
+  <bds-grid xs="12" md="4">
+    <BdsCard>Card 2</BdsCard>
+  </bds-grid>
+  <bds-grid xs="12" md="4">
+    <BdsCard>Card 3</BdsCard>
+  </bds-grid>
+</BdsGrid>
+```
+
+> **Regra prática:**
+> - `<BdsGrid container gap="...">` → container raiz (sem breakpoints)
+> - `<bds-grid xs="..." md="...">` → colunas filhas (com breakpoints)
+
 ## BdsGrid — API real e armadilhas
 
 ### Tipos das props (fonte: `grid-interface.d.ts`)
