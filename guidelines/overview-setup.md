@@ -32,7 +32,29 @@ export default function App() {
 }
 ```
 
-## BdsGrid — regras e armadilhas
+## BdsGrid — API real e armadilhas
+
+### Tipos das props (fonte: `grid-interface.d.ts`)
+
+| Prop | Tipo | Valores válidos |
+|---|---|---|
+| `xs` `sm` `md` `lg` `xg` `xxs` | `string` | `'auto'` \| `'1'` … `'12'` |
+| `xsOffset` `smOffset` `mdOffset` `lgOffset` `xgOffset` `xxsOffset` | `string` | `'1'` … `'12'` |
+| `gap` | `string` | `'none'` \| `'half'` \| `'1'` … `'12'` |
+| `container` | `boolean` | `true` \| `false` |
+| `containerFluid` | `boolean` | `true` \| `false` |
+| `direction` | `string` | `'row'` \| `'row-reverse'` \| `'column'` \| `'column-reverse'` |
+| `flexWrap` | `string` | `'wrap'` \| `'wrap-reverse'` |
+| `justifyContent` | `string` | `'flex-start'` \| `'center'` \| `'flex-end'` \| `'space-between'` \| `'space-around'` \| `'space-evenly'` \| `'stretch'` |
+| `alignItems` | `string` | `'flex-start'` \| `'center'` \| `'flex-end'` \| `'stretch'` \| `'baseline'` |
+| `padding` | `string` | `'none'` \| `'half'` \| `'1'`…`'12'` \| `'t-1'` \| `'b-2'` \| `'l-3'` \| `'r-4'` \| `'x-2'` \| `'y-3'` etc. |
+| `margin` | `string` | igual ao `padding` |
+| `height` | `string` | qualquer valor CSS ex: `'100%'` |
+| `bgColor` | `string` | token de cor |
+
+> ⚠️ **CRÍTICO:** `xs`, `md`, `gap` etc. são **sempre string**. Nunca passe número:
+> - ✅ `xs="6"` `md="4"` `gap="3"`
+> - ❌ `xs={6}` `md={4}` `gap={3}` — renderiza `xs--undefined` no DOM
 
 ### Grid raiz (nível 1)
 ```tsx
