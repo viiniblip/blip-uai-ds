@@ -508,25 +508,23 @@ Não use cards para tudo — excesso de cards em uma tela cria "card soup" onde 
 
 ---
 
-### `BdsCardColor`
+### `BdsCardColor` — ⛔ PROIBIDO
 
-Variante de card com fundo colorido (token de cor).
+`BdsCardColor` é um **swatch de cor interno do design system** (240×140px fixo, sem slot de children). Não é um container utilizável para conteúdo.
+
+**Nunca use `BdsCardColor` em telas.** Para card com fundo colorido, use `BdsCard` com a prop `bgColor`:
 
 ```tsx
-<BdsCardColor color="primary">
-  <BdsTypo variant="fs-16" margin={false}>Destaque</BdsTypo>
-</BdsCardColor>
+// ✅ correto — BdsCard com fundo colorido
+<BdsCard bgColor="var(--color-surface-primary)">
+  <BdsCardBody>
+    <BdsTypo variant="fs-16" margin={false}>Conteúdo</BdsTypo>
+  </BdsCardBody>
+</BdsCard>
+
+// ❌ proibido
+<BdsCardColor color="primary">...</BdsCardColor>
 ```
-
-**Quando usar**
-Use para destacar um card dentro de um grupo — status especial, item em destaque, categoria com cor de identificação.
-
-**Quando NÃO usar**
-Não use cor apenas para decoração — a cor deve comunicar algo (categoria, estado, prioridade). Não use múltiplos `BdsCardColor` com cores diferentes na mesma tela sem uma legenda explicando o que cada cor significa.
-
-**Boas práticas de UX**
-- Garanta contraste suficiente entre o texto e o fundo colorido — não confie apenas na cor do token sem verificar acessibilidade.
-- Use `color="error"` ou `color="warning"` apenas para estados reais de erro ou alerta, não para estética.
 
 ---
 
