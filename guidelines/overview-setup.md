@@ -56,26 +56,99 @@ O kit re-exporta `Container`, `Row`, `Col` e `setConfiguration` do
 ### Exemplo correto
 
 ```tsx
-import { UaiKitProvider, Container, Row, Col, BdsCard, BdsTypo, BdsButton } from 'blip-uai-ds';
+import {
+  UaiKitProvider, Container, Row, Col,
+  BdsCard, BdsCardHeader, BdsCardTitle, BdsCardSubtitle,
+  BdsCardBody, BdsCardFooter,
+  BdsTypo, BdsButton, BdsIcon, BdsBadge, BdsDivider
+} from 'blip-uai-ds';
 
 export default function App() {
   return (
     <UaiKitProvider theme="light">
       <Container>
-        <Row gutterWidth={24}>
+        {/* Cabeçalho de página */}
+        <Row>
+          <Col xs={12}>
+            <BdsTypo variant="fs-32" bold="bold" tag="h1" margin={false}>
+              Dashboard
+            </BdsTypo>
+          </Col>
+        </Row>
+
+        <BdsDivider />
+
+        {/* 3 cards lado a lado — desktop; empilhados — mobile */}
+        <Row gutterWidth={24} style={{ marginTop: 24 }}>
           <Col xs={12} md={4}>
             <BdsCard>
-              <BdsTypo variant="fs-16">Card 1</BdsTypo>
+              <BdsCardHeader>
+                <BdsIcon name="chart-bar" />
+                <BdsCardTitle>Engajamento</BdsCardTitle>
+              </BdsCardHeader>
+              <BdsCardBody>
+                <BdsTypo variant="fs-24" bold="bold" margin={false}>84%</BdsTypo>
+                <BdsBadge color="success" label="+2% esta semana" />
+              </BdsCardBody>
+              <BdsCardFooter>
+                <BdsButton variant="tertiary" size="short">Ver detalhes</BdsButton>
+              </BdsCardFooter>
             </BdsCard>
           </Col>
+
           <Col xs={12} md={4}>
             <BdsCard>
-              <BdsTypo variant="fs-16">Card 2</BdsTypo>
+              <BdsCardHeader>
+                <BdsIcon name="message-talk" />
+                <BdsCardTitle>Resoluções</BdsCardTitle>
+              </BdsCardHeader>
+              <BdsCardBody>
+                <BdsTypo variant="fs-24" bold="bold" margin={false}>2.341</BdsTypo>
+                <BdsBadge color="info" label="Último mês" />
+              </BdsCardBody>
+              <BdsCardFooter>
+                <BdsButton variant="tertiary" size="short">Ver detalhes</BdsButton>
+              </BdsCardFooter>
             </BdsCard>
           </Col>
+
           <Col xs={12} md={4}>
             <BdsCard>
-              <BdsTypo variant="fs-16">Card 3</BdsTypo>
+              <BdsCardHeader>
+                <BdsIcon name="like" />
+                <BdsCardTitle>Satisfação</BdsCardTitle>
+              </BdsCardHeader>
+              <BdsCardBody>
+                <BdsTypo variant="fs-24" bold="bold" margin={false}>4,8 ★</BdsTypo>
+                <BdsBadge color="success" label="Acima da meta" />
+              </BdsCardBody>
+              <BdsCardFooter>
+                <BdsButton variant="tertiary" size="short">Ver detalhes</BdsButton>
+              </BdsCardFooter>
+            </BdsCard>
+          </Col>
+        </Row>
+
+        {/* Linha com sidebar + conteúdo principal */}
+        <Row gutterWidth={24} style={{ marginTop: 24 }}>
+          <Col xs={12} md={3}>
+            <BdsCard>
+              <BdsCardHeader>
+                <BdsCardTitle>Filtros</BdsCardTitle>
+              </BdsCardHeader>
+              <BdsCardBody>
+                <BdsTypo variant="fs-14" margin={false}>Conteúdo do filtro</BdsTypo>
+              </BdsCardBody>
+            </BdsCard>
+          </Col>
+          <Col xs={12} md={9}>
+            <BdsCard>
+              <BdsCardHeader>
+                <BdsCardTitle>Resultados</BdsCardTitle>
+              </BdsCardHeader>
+              <BdsCardBody>
+                <BdsTypo variant="fs-14" margin={false}>Tabela ou lista aqui</BdsTypo>
+              </BdsCardBody>
             </BdsCard>
           </Col>
         </Row>
@@ -86,10 +159,11 @@ export default function App() {
 ```
 
 ### Regras
-- `Container` → wrapper de página (centraliza, aplica max-width)
-- `Row` → linha de colunas. Use `gutterWidth` em px para o gap (ex: `gutterWidth={24}`)
-- `Col` → coluna. Props são **number**, não string: `xs={12}` `md={4}`
-- Componentes UAI ficam **dentro** do `Col`, nunca substituem o grid
+- `Container` / `Row` / `Col` → **só estrutura de layout**, sem estilo visual
+- `Col` props são **number**: `xs={12}` `md={4}` `md={3}` etc.
+- `gutterWidth` em px define o espaço entre colunas (ex: `gutterWidth={24}`)
+- Todo conteúdo visual usa componentes UAI: `BdsCard`, `BdsTypo`, `BdsButton`, `BdsIcon`, `BdsBadge`, `BdsDivider`, etc.
+- **Nunca** use `div` estilizado onde existe componente UAI equivalente
 
 ### Customizar breakpoints para bater com o UAI (opcional)
 ```tsx
