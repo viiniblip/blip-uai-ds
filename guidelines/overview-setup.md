@@ -32,6 +32,34 @@ export default function App() {
 }
 ```
 
+## BdsGrid — regras e armadilhas
+
+### Grid raiz (nível 1)
+```tsx
+<BdsGrid container gap="3">
+  <BdsGrid xs="12" md="6">...</BdsGrid>
+  <BdsGrid xs="12" md="6">...</BdsGrid>
+</BdsGrid>
+```
+
+### Grid aninhado (nível 2+)
+**NUNCA** use `container` nem `gap` em grids internos.
+- `container` aplica `max-width: 944px; margin: auto` via Shadow CSS e estoura a coluna pai.
+- `gap` + largura percentual = overflow aritmético (`50% + 50% + gap > 100%`).
+
+Use `direction="row"` e `flexWrap="wrap"`. O gutter vem do padding nativo das células:
+```tsx
+<BdsGrid container gap="3">
+  <BdsGrid xs="12" md="6">
+    {/* grid interno: sem container, sem gap */}
+    <BdsGrid direction="row" flexWrap="wrap">
+      <BdsGrid xs="6">...</BdsGrid>
+      <BdsGrid xs="6">...</BdsGrid>
+    </BdsGrid>
+  </BdsGrid>
+</BdsGrid>
+```
+
 ## Eventos (lembrete do wrapper Stencil)
 - Eventos são `onBds*` e o payload vem em `event.detail`
   (ex.: `onBdsChange={(e) => e.detail.value}`).
