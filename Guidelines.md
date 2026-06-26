@@ -18,11 +18,28 @@ Todos estão em `node_modules/blip-uai-ds/guidelines/`.
 - `Col` props são **number**: `xs={12}` `md={4}`. Nunca string.
 - `Row` usa `gutterWidth={24}` para espaçamento entre colunas.
 
-### Componentes
-- Use EXCLUSIVAMENTE componentes do kit: `BdsCard`, `BdsButton`, `BdsTypo`, `BdsInput`, `BdsIcon` etc.
-- Nunca use `div` estilizado onde existe componente UAI equivalente.
-- `BdsCardColor` **não aceita children** — é um swatch de cor, não um container.
-- Para container com fundo colorido use `BdsCard` com prop `bgColor`.
+### Componentes — substituição obrigatória de HTML
+
+**Nunca use HTML cru.** Substitua sempre:
+
+| ❌ Nunca use | ✅ Use no lugar |
+|---|---|
+| `<div>` container visual | `<BdsCard>` + `<BdsCardBody>` |
+| `<div>` seção sem título | `<BdsPaper>` |
+| `<div>` layout de colunas | `<Container><Row><Col>` |
+| `<p>`, `<span>`, `<h1>`–`<h6>` | `<BdsTypo variant="fs-XX">` |
+| `<button>` | `<BdsButton variant="...">` |
+| `<input>` | `<BdsInput label="...">` |
+| `<select>` | `<BdsSelect>` |
+| `<img>` | `<BdsImage>` |
+| `<table>` | `<BdsTable>` |
+| `<ul>` / `<li>` | `<BdsList>` + `<BdsListItem>` |
+| `<hr>` | `<BdsDivider>` |
+| `<nav>` | `<BdsNavbar>` ou `<BdsSidebar>` |
+
+- `BdsCardColor` **está proibido** — é um swatch interno, não um container.
+- Para container com fundo colorido use `<BdsCard bgColor="var(--color-...)">`.
+- Se não existe componente UAI equivalente, **avise o usuário** — não improvise.
 
 ### Estilo
 - Só `var(--color-*)`. Nunca hex, rgb ou px hardcoded.

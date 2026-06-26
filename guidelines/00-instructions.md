@@ -33,10 +33,27 @@ import { Container, Row, Col, BdsCard } from 'blip-uai-ds';
 </BdsGrid>
 ```
 
-### Componentes
-- Use EXCLUSIVAMENTE os do kit (`BdsButton`, `BdsInput`, `BdsTypo`, `BdsSelect`, `BdsCard`, `BdsModal`, `BdsIcon`, etc.).
-- Consulte `components.md` para saber qual componente usar em cada situação.
-- **NUNCA** use `div` estilizado, `button`, `input` ou HTML cru onde existe componente UAI equivalente.
+### Componentes — tabela de substituição obrigatória
+
+**Nunca use HTML cru.** Para cada elemento HTML existe um componente UAI equivalente:
+
+| ❌ Nunca use | ✅ Use no lugar |
+|---|---|
+| `<div>` como container visual | `<BdsCard>` + `<BdsCardBody>` |
+| `<div>` como seção sem título | `<BdsPaper>` |
+| `<div>` como layout de colunas | `<Container><Row><Col>` |
+| `<p>`, `<span>`, `<h1>`–`<h6>` | `<BdsTypo variant="fs-XX">` |
+| `<button>` | `<BdsButton variant="...">` |
+| `<input>` | `<BdsInput label="...">` |
+| `<select>` | `<BdsSelect>` |
+| `<img>` | `<BdsImage>` |
+| `<table>` | `<BdsTable>` |
+| `<ul>` / `<li>` | `<BdsList>` + `<BdsListItem>` |
+| `<hr>` | `<BdsDivider>` |
+| `<nav>` | `<BdsNavbar>` ou `<BdsSidebar>` |
+
+- Consulte `components.md` para detalhes de cada componente.
+- **Se não existe componente UAI para o que precisa, avise o usuário — não improvise com HTML.**
 
 ### Estilo
 - Só `var(--token)` do `design-tokens.md`. **NUNCA** hex, rgb ou px hardcoded.
